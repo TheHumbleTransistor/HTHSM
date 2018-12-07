@@ -59,9 +59,14 @@ struct HTHSM_Fsm
 };
 
 
-#define HTHSM_STATE_DEF(debug_id, varName, superstate) \
+#define HTHSM_STATE_DEF(debug_id, varName) \
     static HTHSM_return_t HTHSM_CONCAT_2(varName,_fxn) (HTHSM_Fsm * me, HTHSM_Event const * pEvent); \
-    static const HTHSM_State HTHSM_CONCAT_2(varName,_data) = { HTHSM_CONCAT_2(varName,_fxn), superstate, debug_id}; \
+    static const HTHSM_State HTHSM_CONCAT_2(varName,_data) = { HTHSM_CONCAT_2(varName,_fxn), NULL, debug_id}; \
+    static const HTHSM_State  * const varName = &HTHSM_CONCAT_2(varName,_data)
+
+#define HTHSM_SUBSTATE_DEF(debug_id, varName, superstate) \
+    static HTHSM_return_t HTHSM_CONCAT_2(varName,_fxn) (HTHSM_Fsm * me, HTHSM_Event const * pEvent); \
+    static const HTHSM_State HTHSM_CONCAT_2(varName,_data) = { HTHSM_CONCAT_2(varName,_fxn), &HTHSM_CONCAT_2(superstate,_data), debug_id}; \
     static const HTHSM_State  * const varName = &HTHSM_CONCAT_2(varName,_data)
 
 

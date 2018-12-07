@@ -7,11 +7,11 @@
 
 HTHSM_Fsm fsm;
 
-HTHSM_STATE_DEF(0,stateA, NULL);
-HTHSM_STATE_DEF(1,stateB, stateA);
-HTHSM_STATE_DEF(2,stateC, stateA);
-HTHSM_STATE_DEF(3,stateD, stateC);
-HTHSM_STATE_DEF(4,stateE, NULL);
+HTHSM_STATE_DEF(0,stateA);
+HTHSM_SUBSTATE_DEF(1,stateB, stateA);
+HTHSM_SUBSTATE_DEF(2,stateC, stateA);
+HTHSM_SUBSTATE_DEF(3,stateD, stateC);
+HTHSM_STATE_DEF(4,stateE);
 
 enum {
     SIG_1 = HTHSM_SIG_USER_START,
