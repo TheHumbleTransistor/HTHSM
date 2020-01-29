@@ -1,10 +1,10 @@
 # HTHSM
 
 ## What is this?
-HTHSM is a **framework for implementing heirarchical finite state machines (HSMs) in C** code. 
+HTHSM is a **framework for implementing hierarchical finite state machines (HSMs) in C** code. It allows you to keep event-driven code orderly and readable.
 
 ## Would I benefit from this?
-If you're building something that operates in a handful of clear cut modes/states, then this project may be for you. This framework allows you to keep event-driven code orderly and readable.  An example of a project that would benefit by using HTHSM is a Bluetooth device with states like this:
+If you're building something that operates in a handful of clear cut modes/states, then it may be for you. An example of a project that would find benefit is a Bluetooth device with states like this:
 
 ![State Hierarchy Example - Bluetooth Device](documentation/stateExample.png)
 
