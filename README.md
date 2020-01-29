@@ -4,14 +4,76 @@
 HTHSM is a **framework for implementing heirarchical finite state machines (HSMs) in C** code. 
 
 ## Would I benefit from this?
-If you're building something that operates in a handful of clear cut modes/states, then this project may be for you. This framework allows you to keep event-driven code orderly and readable.  An example candidate for using HTHSM is a bluetotoh device having the following states:
+If you're building something that operates in a handful of clear cut modes/states, then this project may be for you. This framework allows you to keep event-driven code orderly and readable.  An example of a project that would benefit by using HTHSM is a Bluetooth device with states like this:
 
 ![State Hierarchy Example - Bluetooth Device](documentation/stateExample.png)
 
 ## How do I use it?
-Based on the above example of a simple Bluetooth device:
+##### 1. include HTHSM
 ```c
 #include "HTHSM.h"
+```
+##### 2. Declare a variable for your state machine instance
+```c
+static HTHSM_Fsm stateMachine;
+```
+##### 3. Define your states using these macros
+```c
+HTHSM_STATE_DEF(debug_id, varName);
+HTHSM_SUBSTATE_DEF(debug_id, varName, superstate);
+```
+##### 4. Define events
+```c
+enum {
+    USER_EVENT_1 = HTHSM_SIG_USER_START,
+    USER_EVENT_2,
+    USER_EVENT_3,
+};
+```
+##### 5. Have events dispatched to the state machine from the event queue
+HTHSM_Dispatch() should be called from a single location, where events are handled from the event queue. Do not call HTHSM_Dispatch from within a state function.
+```c
+HTHSM_Dispatch(&stateMachine, pEvent);
+```
+##### 6. Implement your states' event handlers
+For each state you define, you'll need to implement a handler function. The handler function name is its state's name suffixed by "_fxn".
+```c
+// Event handler for "fsm_state_powerOff"
+HTHSM_return_t fsm_state_powerOff_fxn (HTHSM_Fsm * me, HTHSM_Event const * pEvent){
+// ...
+}
+```
+Use this function inside your event handler if a transition to a new state is necessary. 
+```c
+// Call HTHSM_Transition() to register a state transition to be performed AFTER the active state
+// AND its superstates have completed dispatching the current event.
+// Only call HTHSM_Transition() in the context of a HTHSM_State's event handler function.
+// This operation will be ignored if called during an entry or exit event.
+void HTHSM_Transition(HTHSM_Fsm *me, const HTHSM_State * const target);
+```
+At the end of the event handler, return one of these values:
+```c
+typedef enum
+{
+    HTHSM_CONTINUE = 0, // Continue on to invoke the superstate's event handling
+    HTHSM_SUPPRESS_SUPERSTATES,  // Bypass all superstates' event handling
+    HTHSM_SUPPRESS_IMMEDIATE_SUPERSTATE  // Skip over the immediate superstate's event handling
+} HTHSM_return_t;
+```
+##### 7. Construct & Initialize the HSM at the beginning of your main() function
+```c
+HTHSM_FsmCtor(&stateMachine, startingState, NULL);
+HTHSM_FsmInit(&stateMachine);
+```
+Optionally you can define a generic event handler function and specify it as the third parameter of the constructor. 
+This function will be called anytime an event is dispatched to the state machine, making it useful for debugging. 
+
+## Example
+Here's an example implementation for a Bluetooth device:
+```c
+#include "HTHSM.h"
+
+static HTHSM_Fsm stateMachine;
 
 /*
 Define and allocate memory for the the states using these macros:
@@ -30,8 +92,6 @@ HTHSM_SUBSTATE_DEF(4, fsm_state_powerOn_disconnected,           fsm_state_powerO
 HTHSM_SUBSTATE_DEF(5, fsm_state_powerOn_pairingMode,            fsm_state_powerOn);
 HTHSM_STATE_DEF(6, fsm_state_onCharger);
 HTHSM_SUBSTATE_DEF(7, fsm_state_onCharger_fullyCharged,         fsm_state_onCharger);
-
-static HTHSM_Fsm stateMachine;
 
 /*
 Define the events that your states react to
