@@ -1,6 +1,10 @@
 //  Copyright © 2017 Ray Kampmeier
 //  [Released under MIT License. Please refer to license.txt for details]
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef HTHSM_h
 #define HTHSM_h
 
@@ -83,3 +87,7 @@ void HTHSM_Dispatch(HTHSM_Fsm *me, HTHSM_Event *e);
 
 
 #endif /* HTHSM_h */
+
+#ifdef __cplusplus
+}
+#endif
