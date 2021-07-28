@@ -44,7 +44,7 @@ enum {
 
 struct HTHSM_Event{
     HTHSM_Signal sig;
-    unsigned int param;
+    uint32_t param;
 };
 
 struct HTHSM_State
