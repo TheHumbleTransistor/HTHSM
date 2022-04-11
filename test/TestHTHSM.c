@@ -304,3 +304,33 @@ void test_hierarchyWithDepth3_transition_withoutLSA(void)
 	HTHSM_Dispatch(&fsm, &event);
 	assertEventsHandled(expectation, sizeof(expectation)/sizeof(expectation[0]));
 }
+
+void test_stateIsActiveMethod(void) {
+    /*
+    HTHSM_STATE_DEF(0,stateA);
+    HTHSM_SUBSTATE_DEF(1,stateB, stateA);
+    HTHSM_SUBSTATE_DEF(2,stateC, stateA);
+    HTHSM_SUBSTATE_DEF(3,stateD, stateC);
+    HTHSM_STATE_DEF(4,stateE);
+     */
+    HTHSM_Event event = {SIG_6, 0};
+
+    HTHSM_FsmCtor(&fsm, stateD, NULL);
+    HTHSM_FsmInit(&fsm);
+
+    // Confirm that the state machine acknowledges it's inside stateD and each of its superstates
+    TEST_ASSERT_TRUE(HTHSM_StateIsActive(&fsm, stateD));
+    TEST_ASSERT_TRUE(HTHSM_StateIsActive(&fsm, stateC));
+    TEST_ASSERT_TRUE(HTHSM_StateIsActive(&fsm, stateA));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateB));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateE));
+
+    HTHSM_Dispatch(&fsm, &event); // Will cause a transition to StateA
+
+    // Confirm that the state machine acknowledges it's inside stateA and none others
+    TEST_ASSERT_TRUE(HTHSM_StateIsActive(&fsm, stateA));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateB));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateC));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateD));
+    TEST_ASSERT_FALSE(HTHSM_StateIsActive(&fsm, stateE));
+}

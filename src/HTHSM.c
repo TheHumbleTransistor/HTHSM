@@ -105,3 +105,13 @@ void __Dispatch(HTHSM_Fsm *me, const HTHSM_Event * const e, const HTHSM_State * 
         __Transition(me, pTransitionTarget);
     }
 }
+
+bool HTHSM_StateIsActive(HTHSM_Fsm *me, const HTHSM_State *pState){
+    // Iterate trough the active state and its superstates to see if the requested pState matches any of them
+    for(const HTHSM_State* pStateSuperstate = me->pState__; pStateSuperstate != NULL; pStateSuperstate = pStateSuperstate->superState){
+        if(pStateSuperstate == pState){
+            return true;
+        }
+    }
+    return false;
+}

@@ -27,7 +27,7 @@ endif
 
 UNITY_ROOT=test/unity
 
-CFLAGS=-std=c89
+CFLAGS=-std=c18
 CFLAGS += -Wall
 CFLAGS += -Wno-comment
 # CFLAGS += -Wextra

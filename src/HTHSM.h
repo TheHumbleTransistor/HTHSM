@@ -80,6 +80,10 @@ void HTHSM_Transition(HTHSM_Fsm *me, const HTHSM_State * const target);
 // HTHSM_Dispatch() should be called from a single location within the application's scheduler (event queue). 
 // Do not call HTHSM_Dispatch from within a state function
 void HTHSM_Dispatch(HTHSM_Fsm *me, HTHSM_Event *e);
+// Call this to confirm if the state machine is in a state.
+// It applies to superstates as well.  For example, if state B is the active state and it's a substate of A,
+// calling this function will return true if either A or B are passed in as the pState parameter.
+bool HTHSM_StateIsActive(HTHSM_Fsm *me, const HTHSM_State *pState);
 
 
 #endif /* HTHSM_h */
