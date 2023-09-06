@@ -1,6 +1,10 @@
 //  Copyright © 2017 Ray Kampmeier
 //  [Released under MIT License. Please refer to license.txt for details]
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef HTHSM_h
 #define HTHSM_h
 
@@ -40,7 +44,7 @@ enum {
 
 struct HTHSM_Event{
     HTHSM_Signal sig;
-    unsigned int param;
+    uint32_t param;
 };
 
 struct HTHSM_State
@@ -87,3 +91,7 @@ bool HTHSM_StateIsActive(HTHSM_Fsm *me, const HTHSM_State *pState);
 
 
 #endif /* HTHSM_h */
+
+#ifdef __cplusplus
+}
+#endif
